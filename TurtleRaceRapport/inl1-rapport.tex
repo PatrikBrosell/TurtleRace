@@ -1,0 +1,101 @@
+% !TEX encoding = UTF-8 Unicode
+\documentclass[a4paper]{article}
+
+\usepackage[T1]{fontenc}     % För svenska bokstäver
+\usepackage[utf8]{inputenc}  % Teckenkodning UTF8
+\usepackage[swedish]{babel}  % För svensk avstavning och svenska
+                             % rubriker (t ex "Innehållsförteckning")
+\usepackage{fancyvrb}        % För programlistor med tabulatorer
+\fvset{tabsize=4}            % Tabulatorpositioner
+\fvset{fontsize=\small}      % Lagom storlek för programlistor
+
+\title{TurtleRace \\
+	Inlämningsuppgift 1, Programmeringsteknik}
+\author{Patrik Brosell, D12 (dat12pbr@student.lu.se)\\
+Fredrik Danebjer, D12 (dat12fda@student.lu.se}
+%\date{2 november 2012}        % Blir dagens datum om det utelämnas
+
+% *** Tillägg för denna rapport. ***
+% Paket:
+\usepackage{graphicx}         % För att inkludera bilder.
+
+% Kommandon i denna rapport
+\newcommand{\code}[1]{\texttt{#1}} % För programkod i text.
+% *** Slut på tillägg för denna rapport. ***
+
+\begin{document}              % Början på dokumentet
+
+\maketitle                    % Skriver ut rubriken som vi
+                              % definierade ovan med \title, \author
+                              % och eventuellt \date
+
+\section{Bakgrund}
+En kapplöpningstävling mellan \texttt{n} antal deltagare äger rum på en kapplöpningsbana ska simuleras. Banan har ett fixt utseende, till exempel en bestämd längd och bredd. Flera lopp kan avgöras på samma bana.
+
+Skiss över anläggningen:
+
+\begin{center}
+\includegraphics[scale=0.2]{turtlerace.pdf}
+\end{center}
+
+Ett program som simulerar ett lopp mellan \texttt{n} sköldpaddor på en kapplöpningsbana skall skrivas. Kapplöpningsbanan består av \texttt{n} antal banor, en för varje sköldpadda. Alla banor har en gemensam
+ start- samt mållinje. I figuren syns startlinje, mållinje och 5 tävlande sköldpaddor.
+
+
+\section{Modell}
+Modellen av kapplöpningsbanan innehåller följande klasser:
+
+\begin{tabular}{lp{8cm}}
+\code{TurtleRace} & Innehåller \code{main}-metoden som skapar sköldpaddorna. \\
+\code{RaceTrack} & Skapar en kapplöpningsbana. \\
+\code{RacingEvent} & Skapar ett lopp mellan sköldpaddorna på kapplöpningsbanan \code{track}. \\
+\code{Turtle} & Beskriver en sköldpadda som kan springa i ett \code{SimpleWindow}-fönster. \\
+\end{tabular}
+
+\vspace{\baselineskip}
+Simuleringen implementeras genom att programmet under hela simuleringstiden varje minut undersöker vad som ska ske. Följande händelser kan inträffa:
+
+\begin{itemize}
+\item En bil anländer till systemet. Detta hanteras av klassen \code{Entry}, som varje minut drar ett Poisson-fördelat slumptal som anger antalet bilar som anländer.
+\item En bil börjar tvättas (flyttas från kön till en tvättstation). Detta hanteras av klassen \code{CarWash}.
+\item En bil är färdigtvättad (flyttas från en tvättstation till utfarten). Också detta hanteras av klassen \code{CarWash}.
+\item En bil lämnar systemet. Detta hanteras av klassen \code{Exit}.
+\end{itemize}
+
+
+De nämnda ''aktiva'' klasserna har alla en metod \code{tick()} som anropas varje minut. Även klassen \code{Clock}, som håller reda på tiden i systemet, har en sådan metod.
+
+Bilarna (\code{Car}-objekten) är helt passiva och skickas bara runt i systemet av de aktiva klasserna. Klasserna \code{Queue} och \code{WashingStation} är också passiva. Deras uppgift är att hålla reda på \code{Car}-objekt under tiden bilarna står i kö eller tvättas. 
+
+
+\section{Brister och kommentarer}
+Eftersom utskriften för varje bil sker när bilarna lämnar systemet kan det inträffa att bilarna inte skrivs ut i nummerordning. Det kan till exempel se ut på följande vis (bilnummer, ankomst\-minut, avgångsminut, tvättstation):
+
+\begin{Verbatim}
+     4   5  24   2
+     5   7  25   1
+     7  21  33   1
+     6  17  34   2
+\end{Verbatim}
+
+Uppgiften har lösts enligt specifikationen med två tvättstationer i biltvätten. Det innebär dock inga större svårigheter att ändra lösningen så att den klarar av ett godtyckligt antal tvätt\-stationer. Tiden som simuleringen ska pågå (i uppgiften var det 60 minuter) läses in när programmet startas, liksom medelvärdet för antalet bilar som ankommer per minut.
+
+
+\section{Programlistor}
+Klasserna finns i filer med samma namn som klasserna, till exempel finns klassen \code{SimWash} i filen \code{SimWash.java}. Samtliga filer finns i samma katalog som huvudprogrammet.
+
+\subsection{\code{SimWash}}
+
+% *** Observera: här ligger java-filerna i samma katalog som 
+% *** LaTeX-filen. Det är inte nödvändigt; man kan skriva ett
+% *** absolut filnamn (med sökvägen till java-filerna i ert
+% *** Eclipse-projekt).
+\VerbatimInput{SimWash.java}
+
+\subsection{\code{CarWash}}
+
+\VerbatimInput{CarWash.java}
+
+\ldots\ osv, liknande programlistor för samtliga klasser.
+
+\end{document}                  % Slut på dokumentet
